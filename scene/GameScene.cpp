@@ -140,8 +140,12 @@ void GameScene::Update() {
 	debugText_->SetPos(0, 0);
 	debugText_->Printf("isDead:%d", enemy_->IsDead());
 
-	debugText_->SetPos(0, 20);
-	debugText_->Printf("position:%f", enemy_->GetTransPosition().z);
+	for (const std::unique_ptr<Enemy>& enemy : enemys_)
+	{
+		debugText_->SetPos(0, 20);
+		debugText_->Printf("position:%f", enemy->GetTransPosition().z);
+	}
+	
 
 #ifdef  _DEBUG
 	if (input_->TriggerKey(DIK_SPACE))
@@ -561,9 +565,12 @@ void GameScene::UpdateEnemyPopCommands()
 			enemySpawnTimer = 180;
 		}
 		//敵のZ座標が-20に到達したら敵を消す
-		if (enemy_->GetTransPosition().z <= -20)
+		for (const std::unique_ptr<Enemy>& enemy : enemys_)
 		{
-			enemy_->OnCollision();
+			if (enemy->GetTransPosition().z <= -20)
+			{
+				enemy->OnCollision();
+			}
 		}
 	}
 
